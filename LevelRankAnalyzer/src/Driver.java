@@ -5,37 +5,28 @@ import java.util.regex.*;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.jsoup.nodes.Document;
+
 public class Driver {
 	
 	public static void main(String[] args) throws IOException{
-		/*URL url = new URL("http://www.flashflashrevolution.com/levelrank.php?sub=ReikonKeiri");
-		URLConnection con = url.openConnection();
-		Pattern p = Pattern.compile("text/html;\\s+charset=([^\\s]+)\\s*");
-		Matcher m = p.matcher(con.getContentType());
-		String charset = m.matches() ? m.group(1) : "UTF-8";
-		Reader r = new InputStreamReader(con.getInputStream(), charset);
-		StringBuilder buf = new StringBuilder();
-		while (true) {
-		  int ch = r.read();
-		  if (ch < 0)
-		    break;
-		  buf.append((char) ch);
+		WebScrape test = new WebScrape();
+		Document[] scores = null;
+		String[] form = new LoginDialog(false).showDialog();
+		
+		try {
+			test.setUp();
+			scores = test.test(form[0], form[1], form[2]=="true", form[3]);
+			test.tearDown();
+		} catch (Exception e1) {
 		}
-		String str = buf.toString();
-		System.out.println(str);*/
-		Song[] songs = null;
-		JFileChooser chooser = new JFileChooser();
-        chooser.showOpenDialog(null);
-        File f = chooser.getSelectedFile();
-        try {
-			Input input = new Input(f);
-        	songs = Input.readInput();
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null,
-				    "Invalid File.",
-				    "Error",
-				    JOptionPane.ERROR_MESSAGE);
+		
+		if(scores.equals("")){
+			System.exit(0);
 		}
+		
+		Song[] songs = Input.readInput(scores);
+
         Analyzer analyze = new Analyzer(songs);
 		Gui gui = new Gui(analyze);
 	}

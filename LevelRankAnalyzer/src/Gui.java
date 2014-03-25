@@ -1,5 +1,7 @@
 import javax.swing.*;
 
+import org.jsoup.nodes.Document;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -68,7 +70,7 @@ public class Gui extends JFrame {
 		
 		
 		title = new JLabel("FlashFlashRevolution Unofficial Level Rank App");
-		watermark = new JLabel("made by ReikonKeiri v1.2");
+		watermark = new JLabel("made by ReikonKeiri v2.0");
 		sort = new JLabel("Sort");
 		levelRanks = new JLabel("Level Ranks");
 		filter = new JLabel("Filter");
@@ -258,19 +260,19 @@ public class Gui extends JFrame {
 			if(actionCommand.equals("New Score"))
 				newS = new NewScore(analyze);
 			if(actionCommand.equals("Compare!")){
-				JFileChooser chooser = new JFileChooser();
-		        chooser.showOpenDialog(null);
-		        File f = chooser.getSelectedFile();
-		        Song[] songs2 = null;
-		        try {
-					Input input = new Input(f);
-					songs2 = Input.readInput();
-				} catch (IOException e1) {
-					JOptionPane.showMessageDialog(null,
-						    "Invalid File.",
-						    "Error",
-						    JOptionPane.ERROR_MESSAGE);
+				WebScrape test = new WebScrape();
+				Document[] scores = null;
+				String[] form = new LoginDialog(true).showDialog();
+				
+				try {
+					test.setUp();
+					scores = test.test(form[0], form[1], form[2]=="true", form[3]);
+					test.tearDown();
+				} catch (Exception e1) {
 				}
+				
+				Song[] songs2 = Input.readInput(scores);
+				
 		        Song[] songs = analyze.getAll();
 		        Collections.sort(Arrays.asList(songs2),
 						new Comparators.SongNameAscComparator());
